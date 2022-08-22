@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     # local apps
     "accounts",
     "core",
+    "dispatch",
 ]
 
 MIDDLEWARE = [
