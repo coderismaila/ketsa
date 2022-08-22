@@ -2,8 +2,9 @@ from django import forms
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
+
+from core.models import Profile
 
 from .models import CustomUser
 
@@ -55,10 +56,17 @@ class UserChangeForm(forms.ModelForm):
         )
 
 
+class UserProfileInline(admin.StackedInline):
+    model = Profile
+    max_num = 1
+    can_delete = False
+
+
 class UserAdmin(BaseUserAdmin):
     # The forms to add and change user instances
     form = UserChangeForm
     add_form = UserCreationForm
+    inlines = [UserProfileInline]
 
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin

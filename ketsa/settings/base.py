@@ -22,7 +22,6 @@ ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="127.0.0.1,localhost", cast=Csv(
 # Application definition
 
 INSTALLED_APPS = [
-    "bootstrap4",
     "admin_interface",
     "colorfield",
     "django.contrib.admin",
@@ -31,8 +30,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "bootstrap4",
     # local apps
     "accounts",
+    "core",
 ]
 
 MIDDLEWARE = [
@@ -140,8 +141,9 @@ MEDIA_ROOT = BASE_DIR.parent.parent / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-LOGIN_URL = "/sign-in"
-LOGIN_REDIRECT_URL = "/"
+LOGIN_URL = "/login"
+LOGIN_REDIRECT_URL = "/dashboard"
+LOGOUT_REDIRECT_URL = "/"
 
 
 X_FRAME_OPTIONS = "SAMEORIGIN"  # only if django version >= 3.0
