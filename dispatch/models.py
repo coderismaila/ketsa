@@ -25,7 +25,7 @@ class LoadReading(models.Model):
     date = models.DateTimeField(_("date"), blank=False, null=False)
     feeder = models.ForeignKey(Feeder, on_delete=models.SET_NULL, null=True, blank=True, unique=False)
     load_amps = models.FloatField(_("load (A)"), blank=True, null=True)
-    status = models.CharField(_("feeder status"), max_length=3, choices=STATUS)
+    status = models.CharField(_("feeder status"), max_length=3, choices=STATUS, blank=True, null=True)
 
     def __str__(self):
         return self.feeder.name

@@ -1,0 +1,29 @@
+{% extends 'dispatch/load_reading.html' %}
+{% load bootstrap4 %}
+{% load static %}
+
+{% block loadreading %}
+<form method="POST">
+    {% csrf_token %}
+    <!-- {% bootstrap_formset formset layout='inline' %} -->
+    <table class="table">
+        <thead>
+            <th scope="col">Date</th>
+            <th scope="col">Feeder</th>
+            <th scope="col">Load (Amps)</th>
+            <th scope="col">Status</th>
+        </thead>
+
+        {% for form in formset %}
+        <tr>
+            <td>{% bootstrap_field form.date show_label=False %}</td>
+            <td>{% bootstrap_field form.feeder show_label=False %}</td>
+            <td>{% bootstrap_field form.load_amps show_label=False %}</td>
+            <td>{% bootstrap_field form.status show_label=False %}</td>
+        </tr>
+
+        {% endfor %}
+    </table>
+    <input type="submit" value="Save" class="btn btn-primary">
+</form>
+{% endblock %}

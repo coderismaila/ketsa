@@ -3,6 +3,17 @@ from django.contrib import admin
 from core import models
 
 
+class PowerTransformerConfig(admin.ModelAdmin):
+    list_display = ("transmission_station", "name", "capacity_kva")
+
+    def transmission_station(self, obj):
+        return obj.station.name
+
+
+class StationAdninConfig(admin.ModelAdmin):
+    list_display = ("name", "capacity_kva", "type")
+
+
 class AreaOfficeAdminConfig(admin.ModelAdmin):
     list_display = ("name", "technical_manager")
     ordering = ("name",)
@@ -34,7 +45,7 @@ class FeederAdminConfig(admin.ModelAdmin):
 
 
 admin.site.register(models.AreaOffice, AreaOfficeAdminConfig)
-admin.site.register(models.Station)
-admin.site.register(models.PowerTransformer)
+admin.site.register(models.Station, StationAdninConfig)
+admin.site.register(models.PowerTransformer, PowerTransformerConfig)
 admin.site.register(models.Band, BandAdminConfig)
 admin.site.register(models.Feeder, FeederAdminConfig)

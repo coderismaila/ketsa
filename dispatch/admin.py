@@ -3,7 +3,7 @@ from dispatch.models import LoadReading
 
 
 class LoadReadingConfig(admin.ModelAdmin):
-    list_display = ("station", "feeder", "hour", "load_amps", "status", "date")
+    list_display = ("station", "feeder", "hour", "load_amps", "status", "status", "date")
     list_filter = ("date",)
     ordering = ("date",)
 

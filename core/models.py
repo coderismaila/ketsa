@@ -98,6 +98,7 @@ class Feeder(models.Model):
     nerc_code = models.CharField(_("nerc code"), max_length=4, unique=True, null=False, blank=False)
     power_transformer = models.ForeignKey(PowerTransformer, on_delete=models.SET_NULL, null=True)
     area_office = models.ForeignKey(AreaOffice, on_delete=models.SET_NULL, null=True)
+    voltage_level = models.CharField(_("voltage level"), max_length=4, choices=[("11", "11KV"), ("33", "33KV")])
 
     def __str__(self):
         return self.name
