@@ -1,5 +1,5 @@
 from django.contrib import admin
-from dispatch.models import LoadReading
+from dispatch.models import ForcedOutage, LoadReading
 
 
 class LoadReadingConfig(admin.ModelAdmin):
@@ -20,4 +20,10 @@ class LoadReadingConfig(admin.ModelAdmin):
         return str(obj.date.hour).zfill(2)
 
 
+class ForcedOutageAdminConfig(admin.ModelAdmin):
+    list_display = ("feeder", "relay_indicator", "time_out", "time_in", "induced_by", "remark")
+    list_filter = ("feeder", "relay_indicator", "time_out", "induced_by")
+
+
 admin.site.register(LoadReading, LoadReadingConfig)
+admin.site.register(ForcedOutage, ForcedOutageAdminConfig)

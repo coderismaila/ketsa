@@ -29,3 +29,26 @@ class LoadReading(models.Model):
 
     # def __str__(self):
     #     return self.feeder.name
+
+
+class ForcedOutage(models.Model):
+    OVERCURRENT = "O/C"
+    EARTH_FAULT = "E/F"
+    OVERCURRENT_AND_EARTH_FAULT = "O/C & E/F"
+    OUT_OF_SERVICE = "O/S"
+    FREQUENCY_CONTROL = "F/C"
+    RELAY_INDICATOR = [
+        (OVERCURRENT, "Over Current"),
+        (EARTH_FAULT, "Earth Fault"),
+        (OVERCURRENT_AND_EARTH_FAULT, "Over Current & Earth Fault"),
+        (OUT_OF_SERVICE, "Out of Service"),
+        (FREQUENCY_CONTROL, "Frequency Control"),
+    ]
+    feeder = models.ForeignKey(Feeder, on_delete=models.SET_NULL, null=True, blank=True)
+    time_out = models.DateTimeField(_("time out"), blank=False, null=False)
+    time_in = models.DateTimeField(_("time in"), blank=True, null=True)
+    relay_indicator = models.CharField(_("relay indicator"), max_length=10, choices=RELAY_INDICATOR)
+    induced_by = models.CharField(
+        _("induced by"), max_length=10, choices=[("KAEDCO", "KAEDCO"), ("GRID", "GRID")], null=True, blank=True
+    )
+    remark = models.CharField(_("remark"), max_length=255, null=True, blank=True)
