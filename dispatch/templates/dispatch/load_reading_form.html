@@ -1,11 +1,31 @@
-{% extends 'dispatch/load_reading.html' %}
+{% extends 'core/base.html' %}
+
+{% block content %}
 {% load bootstrap4 %}
 {% load static %}
 
-{% block loadreading %}
+<div class="row pb-4 justify-content-center">
+    <div class="col-md-6">
+        <form method="GET">
+            <div class="form-row">
+                <div class="col-md-4">
+                    <input type="date" name="date" id="date" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <input type="time" name="hour" id="hour" value="00:00" step="3600" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <input type="submit" value="Submit" class="btn btn-outline-success">
+                </div>
+
+            </div>
+
+        </form>
+    </div>
+</div>
+
 <form method="POST">
     {% csrf_token %}
-    <!-- {% bootstrap_formset formset layout='inline' %} -->
     <table class="table">
         <thead>
             <th scope="col">Date</th>
@@ -13,15 +33,21 @@
             <th scope="col">Load (Amps)</th>
             <th scope="col">Status</th>
         </thead>
-
+        {{ formset.management_form }}
+        {% for hidden in formset.hidden_fields %}
+        {{ hidden }}
+        {% endfor %}
+        <!-- {% bootstrap_formset formset %} -->
         {% for form in formset %}
+        {{ form.id }}
+        {{ form.ORDER }}
+        {{ form.DELETE }}
         <tr>
-            <td>{% bootstrap_field form.date show_label=False %}</td>
-            <td>{% bootstrap_field form.feeder show_label=False %}</td>
-            <td>{% bootstrap_field form.load_amps show_label=False %}</td>
-            <td>{% bootstrap_field form.status show_label=False %}</td>
+            <td>{% bootstrap_field form.date show_label=False field_class='form-control-sm disable' %}</td>
+            <td>{% bootstrap_field form.feeder show_label=False field_class='form-control-sm' %}</td>
+            <td>{% bootstrap_field form.load_amps show_label=False field_class='form-control-sm' %}</td>
+            <td>{% bootstrap_field form.status show_label=False field_class='form-control-sm' %}</td>
         </tr>
-
         {% endfor %}
     </table>
     <input type="submit" value="Save" class="btn btn-primary">

@@ -11,7 +11,7 @@ urlpatterns = [
     path("", core_views.home, name="home"),
     path("dashboard/", core_views.dashboard, name="dashboard"),
     path("accounts/", include("django.contrib.auth.urls")),
-    path("load_reading/", dispatch_views.load_reading, name="load_reading"),
-    path("load_reading/create/", dispatch_views.create_load_reading, name="create"),
+    path("load_reading/", dispatch_views.load_reading_table, name="load_reading_table"),
+    path("load_reading/create/", dispatch_views.load_reading_form, name="load_reading_form"),
 ]
 # + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

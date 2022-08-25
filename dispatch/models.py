@@ -27,5 +27,5 @@ class LoadReading(models.Model):
     load_amps = models.FloatField(_("load (A)"), blank=True, null=True)
     status = models.CharField(_("feeder status"), max_length=3, choices=STATUS, blank=True, null=True)
 
-    def __str__(self):
-        return self.feeder.name
+    # def __str__(self):
+    #     return self.feeder.name

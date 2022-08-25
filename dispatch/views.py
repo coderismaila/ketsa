@@ -20,14 +20,14 @@ def parse_dt(date, time):
             month = int(date.split("-")[1])
             day = int(date.split("-")[-1])
             hour = int(time.split(":")[0])
-            dt = datetime(year, month, day, hour).astimezone(pytz.UTC)
+            dt = datetime(year, month, day, hour).astimezone()
             return dt
         except:
             return None
     return None
 
 
-def load_reading(request):
+def load_reading_form(request):
     query_dict = request.GET
     qs = None
     dt = None
@@ -70,16 +70,26 @@ def load_reading(request):
     else:
         formset = LoadReadingFormset(queryset=qs)
 
-    return render(request, "dispatch/load_reading.html", {"formset": formset})
-
-
-def create_load_reading(request):
-    LoadReadingFormset = modelformset_factory(
-        LoadReading,
-        fields=("date", "feeder", "load_amps", "status"),
-        extra=0,
-    )
-
-    formset = LoadReadingFormset()
-
     return render(request, "dispatch/load_reading_form.html", {"formset": formset})
+
+
+def load_reading_table(request):
+    query_dict = request.GET
+    qs = None
+    dt = None
+    feeders = None
+
+    try:
+        dt = parse_dt(query_dict.get("date"), "00:00")
+
+        # get load reading for the datetime
+        qs = (
+            LoadReading.objects.filter(date__day=dt.day, date__month=dt.month, date__year=dt.year)
+            .all()
+            .order_by("date")
+        )
+        feeders = Feeder.objects.all()
+    except:
+        qs = None
+
+    return render(request, "dispatch/load_reading_table.html", {"objects": qs, "fdrs": feeders})

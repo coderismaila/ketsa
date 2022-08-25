@@ -75,6 +75,9 @@ class PowerTransformer(models.Model):
     )
     station = models.ForeignKey(Station, on_delete=models.SET_NULL, null=True)
 
+    class Meta:
+        unique_together = ("name", "station")
+
     def __str__(self):
         return self.name + " - " + str(self.capacity_kva / 1000) + "MVA - " + self.station.name
 

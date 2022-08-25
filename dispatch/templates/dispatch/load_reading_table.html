@@ -1,0 +1,231 @@
+{% extends 'core/base.html' %}
+{% load bootstrap4 %}
+{% load static %}
+
+{% block content %}
+<div class="row pb-4">
+    <div class="col-md-6">
+        <form action="/load_reading/" method="GET">
+            <div class="form-row">
+                <div class="col-md-6">
+                    <input type="date" name="date" id="date" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <input type="submit" value="Submit" class="btn btn-outline-success">
+                </div>
+
+            </div>
+
+        </form>
+    </div>
+</div>
+<div>
+    <table class="table table-hover table-responsive table-borderless">
+        <thead class="thead-dark">
+            <tr>
+                <th>Feeders</th>
+                <th>01</th>
+                <th>02</th>
+                <th>03</th>
+                <th>04</th>
+                <th>05</th>
+                <th>06</th>
+                <th>07</th>
+                <th>08</th>
+                <th>09</th>
+                <th>10</th>
+                <th>11</th>
+                <th>12</th>
+                <th>13</th>
+                <th>14</th>
+                <th>15</th>
+                <th>16</th>
+                <th>17</th>
+                <th>18</th>
+                <th>19</th>
+                <th>20</th>
+                <th>21</th>
+                <th>22</th>
+                <th>23</th>
+                <th>00</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for f in fdrs %}
+            <tr>
+                <td>
+                    {{ f }}
+                </td>
+                {% for obj in objects %}
+                {% if f == obj.feeder and obj.date.hour == 1 %}
+                <td>
+                    {{ obj.load_amps }}
+                </td>
+                {% endif %}
+
+                {% if f == obj.feeder and obj.date.hour == 2 %}
+                <td>
+                    {{ obj.load_amps }}
+                </td>
+                {% endif %}
+
+                {% if f == obj.feeder and obj.date.hour == 3 %}
+                <td>
+                    {{ obj.load_amps }}
+                </td>
+                {% endif %}
+
+
+                {% if f == obj.feeder and obj.date.hour == 4 %}
+                <td>
+                    {{ obj.load_amps }}
+                </td>
+                {% endif %}
+
+
+                {% if f == obj.feeder and obj.date.hour == 5 %}
+                <td>
+                    {{ obj.load_amps }}
+                </td>
+                {% endif %}
+
+
+                {% if f == obj.feeder and obj.date.hour == 6 %}
+                <td>
+                    {{ obj.load_amps }}
+                </td>
+                {% endif %}
+
+
+                {% if f == obj.feeder and obj.date.hour == 7 %}
+                <td>
+                    {{ obj.load_amps }}
+                </td>
+                {% endif %}
+
+
+                {% if f == obj.feeder and obj.date.hour == 8 %}
+                <td>
+                    {{ obj.load_amps }}
+                </td>
+                {% endif %}
+
+
+                {% if f == obj.feeder and obj.date.hour == 9 %}
+                <td>
+                    {{ obj.load_amps }}
+                </td>
+                {% endif %}
+
+
+                {% if f == obj.feeder and obj.date.hour == 10 %}
+                <td>
+                    {{ obj.load_amps }}
+                </td>
+                {% endif %}
+
+
+                {% if f == obj.feeder and obj.date.hour == 11 %}
+                <td>
+                    {{ obj.load_amps }}
+                </td>
+                {% endif %}
+
+
+                {% if f == obj.feeder and obj.date.hour == 12 %}
+                <td>
+                    {{ obj.load_amps }}
+                </td>
+                {% endif %}
+
+
+                {% if f == obj.feeder and obj.date.hour == 13 %}
+                <td>
+                    {{ obj.load_amps }}
+                </td>
+                {% endif %}
+
+
+                {% if f == obj.feeder and obj.date.hour == 14 %}
+                <td>
+                    {{ obj.load_amps }}
+                </td>
+                {% endif %}
+
+
+                {% if f == obj.feeder and obj.date.hour == 15 %}
+                <td>
+                    {{ obj.load_amps }}
+                </td>
+                {% endif %}
+
+
+                {% if f == obj.feeder and obj.date.hour == 16 %}
+                <td>
+                    {{ obj.load_amps }}
+                </td>
+                {% endif %}
+
+
+                {% if f == obj.feeder and obj.date.hour == 17 %}
+                <td>
+                    {{ obj.load_amps }}
+                </td>
+                {% endif %}
+
+
+                {% if f == obj.feeder and obj.date.hour == 18 %}
+                <td>
+                    {{ obj.load_amps }}
+                </td>
+                {% endif %}
+
+
+                {% if f == obj.feeder and obj.date.hour == 19 %}
+                <td>
+                    {{ obj.load_amps }}
+                </td>
+                {% endif %}
+
+
+                {% if f == obj.feeder and obj.date.hour == 20 %}
+                <td>
+                    {{ obj.load_amps }}
+                </td>
+                {% endif %}
+
+
+                {% if f == obj.feeder and obj.date.hour == 21 %}
+                <td>
+                    {{ obj.load_amps }}
+                </td>
+                {% endif %}
+
+
+                {% if f == obj.feeder and obj.date.hour == 22 %}
+                <td>
+                    {{ obj.load_amps }}
+                </td>
+                {% endif %}
+
+
+                {% if f == obj.feeder and obj.date.hour == 23 %}
+                <td>
+                    {{ obj.load_amps }}
+                </td>
+                {% endif %}
+
+
+                {% if f == obj.feeder and obj.date.hour == 24 %}
+                <td>
+                    {{ obj.load_amps }}
+                </td>
+                {% endif %}
+
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
