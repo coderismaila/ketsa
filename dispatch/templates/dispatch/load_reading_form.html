@@ -3,8 +3,10 @@
 {% block content %}
 {% load bootstrap4 %}
 {% load static %}
-
-<div class="row pb-4 justify-content-center">
+<div class="justify-content-center text-center">
+    <h4>Daily Load Reading Input Form</h4>
+</div>
+<div class="row py-4">
     <div class="col-md-6">
         <form method="GET">
             <div class="form-row">
@@ -26,6 +28,7 @@
 
 <form method="POST">
     {% csrf_token %}
+    {% if selected_date %}
     <table class="table">
         <thead>
             <th scope="col">Date</th>
@@ -52,4 +55,16 @@
     </table>
     <input type="submit" value="Save" class="btn btn-primary">
 </form>
+{% else %}
+<div class="text-center my-5">
+    <div class="card">
+        <div class="card-body">
+            <em>
+                No Date and Hour Selected. <br>
+                Select a date and hour to input data!
+            </em>
+        </div>
+    </div>
+</div>
+{% endif %}
 {% endblock %}

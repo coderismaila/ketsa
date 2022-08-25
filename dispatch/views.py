@@ -37,7 +37,6 @@ def load_reading_form(request):
 
         # check if date already in database
         date_exists = LoadReading.objects.filter(date=dt).count()
-        print(date_exists)
         if date_exists == 0:
             # initialize new load reading data for the particular date and hour
             feeders = Feeder.objects.all()
@@ -59,18 +58,16 @@ def load_reading_form(request):
     # initialize formset
 
     if request.method == "POST":
-        print("Saving form...")
         formset = LoadReadingFormset(request.POST)
         if formset.is_valid():
             instances = formset.save(commit=False)
             for instance in instances:
                 instance.save()
-        print("Form saved!")
 
     else:
         formset = LoadReadingFormset(queryset=qs)
 
-    return render(request, "dispatch/load_reading_form.html", {"formset": formset})
+    return render(request, "dispatch/load_reading_form.html", {"formset": formset, "selected_date": dt})
 
 
 def load_reading_table(request):
@@ -88,8 +85,18 @@ def load_reading_table(request):
             .all()
             .order_by("date")
         )
+        print("qs")
+        print(qs.count())
         feeders = Feeder.objects.all()
     except:
         qs = None
 
-    return render(request, "dispatch/load_reading_table.html", {"objects": qs, "fdrs": feeders})
+    return render(
+        request,
+        "dispatch/load_reading_table.html",
+        {
+            "objects": qs,
+            "fdrs": feeders,
+            "selected_date": dt,
+        },
+    )
