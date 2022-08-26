@@ -30,10 +30,10 @@
     {% csrf_token %}
     {% if selected_date %}
     <table class="table">
-        <thead>
+        <thead class="thead-dark">
             <th scope="col">Date</th>
             <th scope="col">Feeder</th>
-            <th scope="col">Load (Amps)</th>
+            <th scope="col">Load (MW)</th>
             <th scope="col">Status</th>
         </thead>
         {{ formset.management_form }}
@@ -48,7 +48,7 @@
         <tr>
             <td>{% bootstrap_field form.date show_label=False field_class='form-control-sm disable' %}</td>
             <td>{% bootstrap_field form.feeder show_label=False field_class='form-control-sm' %}</td>
-            <td>{% bootstrap_field form.load_amps show_label=False field_class='form-control-sm' %}</td>
+            <td>{% bootstrap_field form.load_mw show_label=False field_class='form-control-sm' %}</td>
             <td>{% bootstrap_field form.status show_label=False field_class='form-control-sm' %}</td>
         </tr>
         {% endfor %}

@@ -3,7 +3,7 @@ from dispatch.models import ForcedOutage, LoadReading
 
 
 class LoadReadingConfig(admin.ModelAdmin):
-    list_display = ("station", "feeder", "hour", "load_amps", "status", "status", "date")
+    list_display = ("station", "feeder", "hour", "load_mw", "status", "status", "date")
     list_filter = ("date", "feeder__name")
     ordering = ("date",)
 
@@ -18,6 +18,9 @@ class LoadReadingConfig(admin.ModelAdmin):
 
     def hour(self, obj):
         return str(obj.date.hour).zfill(2)
+
+
+# class LoadAllocationAndGeneration()
 
 
 class ForcedOutageAdminConfig(admin.ModelAdmin):

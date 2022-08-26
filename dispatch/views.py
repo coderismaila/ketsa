@@ -41,7 +41,9 @@ def load_reading_form(request):
             # initialize new load reading data for the particular date and hour
             feeders = Feeder.objects.all()
             for feeder in feeders:
-                reading = LoadReading.objects.create(date=dt, feeder=feeder, load_amps=0)
+                reading = LoadReading.objects.create(
+                    date=dt, feeder=feeder, load_mw=0, allocation_mw=0, generation_mw=0
+                )
                 reading.save()
     except:
         qs = None
@@ -52,7 +54,7 @@ def load_reading_form(request):
     # create formset for load reading
     LoadReadingFormset = modelformset_factory(
         LoadReading,
-        fields=("date", "feeder", "load_amps", "status"),
+        fields=("date", "feeder", "load_mw", "status"),
         extra=0,
     )
     # initialize formset

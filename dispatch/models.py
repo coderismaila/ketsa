@@ -4,6 +4,20 @@ from django.utils.translation import gettext_lazy as _
 from core.models import Feeder
 
 
+class Grid(models.Model):
+    date = models.DateTimeField(_("date"), null=False, blank=False)
+    allocation_mw = models.FloatField(_("allocation (mw"), null=False, blank=False)
+    generation_mw = models.FloatField(_("generation (mw"), null=False, blank=False)
+    status = models.CharField(
+        _("grid status"),
+        max_length=10,
+        choices=[
+            ("IN CIRCUIT", "In Circuit"),
+            ("BLACKOUT", "Blackout"),
+        ],
+    )
+
+
 class LoadReading(models.Model):
     LOAD_SHEDDING = "L/S"
     OUT_OF_SERVICE = "O/S"
@@ -24,7 +38,8 @@ class LoadReading(models.Model):
     ]
     date = models.DateTimeField(_("date"), blank=False, null=False)
     feeder = models.ForeignKey(Feeder, on_delete=models.SET_NULL, null=True, blank=True, unique=False)
-    load_amps = models.FloatField(_("load (A)"), blank=True, null=True)
+    load_mw = models.FloatField(_("load (MW)"), blank=True, null=True)
+
     status = models.CharField(_("feeder status"), max_length=3, choices=STATUS, blank=True, null=True)
 
     # def __str__(self):
