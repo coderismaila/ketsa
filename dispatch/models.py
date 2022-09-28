@@ -6,15 +6,16 @@ from core.models import Feeder
 
 class Grid(models.Model):
     date = models.DateTimeField(_("date"), null=False, blank=False)
-    allocation_mw = models.FloatField(_("allocation (mw"), null=False, blank=False)
-    generation_mw = models.FloatField(_("generation (mw"), null=False, blank=False)
+    allocation_mw = models.FloatField(_("allocation (MW)"), null=False, blank=False, default=0)
+    generation_mw = models.FloatField(_("generation (MW)"), null=False, blank=False, default=0)
     status = models.CharField(
         _("grid status"),
         max_length=10,
         choices=[
-            ("IN CIRCUIT", "In Circuit"),
-            ("BLACKOUT", "Blackout"),
+            ("IN_CIRCUIT", "IN CIRCUIT"),
+            ("BLACKOUT", "BLACKOUT"),
         ],
+        default="IN_CIRCUIT",
     )
 
 

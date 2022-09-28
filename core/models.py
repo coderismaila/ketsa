@@ -46,6 +46,7 @@ class Station(models.Model):
         null=False,
         db_index=True,
     )
+    short_name = models.CharField(_("short name"), max_length=20, null=True, blank=True)
     capacity_kva = models.PositiveIntegerField(_("capacity (kva)"), null=True, blank=True)
     type = models.CharField(max_length=2, choices=STATION_TYPE, default=DISTRIBUTION)
 

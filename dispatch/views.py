@@ -5,7 +5,8 @@ import pytz
 
 # from dispatch.forms import CreateLoadReadingForm
 from core.models import Feeder
-from dispatch.models import LoadReading
+from dispatch.models import Grid, LoadReading
+from dispatch.forms import GridForm
 
 
 def parse_dt(date, time):
@@ -20,7 +21,14 @@ def parse_dt(date, time):
             month = int(date.split("-")[1])
             day = int(date.split("-")[-1])
             hour = int(time.split(":")[0])
-            dt = datetime(year, month, day, hour).astimezone()
+
+            # we dont want 00:00:00 to be associated with the next day so we
+            # reset it to the previous day by substracting a second
+            if hour == 0:
+                hour = 23
+                dt = datetime(year, month, day, hour, minute=59, second=59)
+                return dt
+            dt = datetime(year, month, day, hour)
             return dt
         except:
             return None
@@ -31,6 +39,8 @@ def load_reading_form(request):
     query_dict = request.GET
     qs = None
     dt = None
+    go = None
+    grid_form = GridForm()
 
     try:
         dt = parse_dt(query_dict.get("date"), query_dict.get("hour"))
@@ -41,10 +51,10 @@ def load_reading_form(request):
             # initialize new load reading data for the particular date and hour
             feeders = Feeder.objects.all()
             for feeder in feeders:
-                reading = LoadReading.objects.create(
-                    date=dt, feeder=feeder, load_mw=0, allocation_mw=0, generation_mw=0
-                )
+                reading = LoadReading.objects.create(date=dt, feeder=feeder, load_mw=0)
                 reading.save()
+        go = Grid.objects.get_or_create(date=dt)
+        grid_form = GridForm(instance=go[0])
     except:
         qs = None
 
@@ -57,19 +67,32 @@ def load_reading_form(request):
         fields=("date", "feeder", "load_mw", "status"),
         extra=0,
     )
+
     # initialize formset
+    formset = LoadReadingFormset(queryset=qs)
 
     if request.method == "POST":
-        formset = LoadReadingFormset(request.POST)
-        if formset.is_valid():
-            instances = formset.save(commit=False)
-            for instance in instances:
-                instance.save()
+        if request.POST.get("action") == "load_reading":
+            formset = LoadReadingFormset(request.POST)
+            if formset.is_valid():
+                instances = formset.save(commit=False)
+                for instance in instances:
+                    instance.save()
+        if request.POST.get("action") == "grid_reading":
+            # grid form
+            grid_form = GridForm(request.POST, instance=go[0])
+            if grid_form.is_valid():
+                grid_form.save()
 
-    else:
-        formset = LoadReadingFormset(queryset=qs)
-
-    return render(request, "dispatch/load_reading_form.html", {"formset": formset, "selected_date": dt})
+    return render(
+        request,
+        "dispatch/load_reading_form.html",
+        {
+            "formset": formset,
+            "grid_form": grid_form,
+            "selected_date": dt,
+        },
+    )
 
 
 def load_reading_table(request):

@@ -15,3 +15,7 @@ urlpatterns = [
     path("load_reading/create/", dispatch_views.load_reading_form, name="load_reading_form"),
 ]
 # + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+admin.site.site_header = "KETSA Admin"
+admin.site.site_title = "KETSA Admin Portal"
+admin.site.index_title = "Welcome to KETSA Admin Portal"
