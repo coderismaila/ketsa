@@ -1,4 +1,3 @@
-from re import X
 from django.shortcuts import render
 from core.models import Feeder
 from django.db.models import Sum
@@ -55,7 +54,7 @@ def dashboard(request):
     # get total load across all feeders at current grid reading time
     current_load_reading = LoadReading.objects.filter(date=grid_reading.date).aggregate(load_mw=Sum("load_mw"))
 
-    # get current load  and grid reading
+    # get current load and grid reading for the day
     load_reading_qs = (
         LoadReading.objects.filter(
             date__year=grid_reading.date.year,
@@ -63,14 +62,38 @@ def dashboard(request):
             date__day=grid_reading.date.day,
         )
         .all()
-        .values("date", "load_mw", "feeder__power_transformer__station__short_name")
+        .values("date", "load_mw")
     )
 
-    load_reading_qs2 = (
+    # query for load center at grid date and hour
+    load_center_qs = (
         LoadReading.objects.filter(date=grid_reading.date)
         .all()
         .values("date", "load_mw", "feeder__power_transformer__station__short_name")
     )
+
+    # query for total load taken by area offices for current month
+    area_office_qs = LoadReading.objects.filter(
+        date__year=grid_reading.date.year, date__month=grid_reading.date.month
+    ).values("date", "feeder__area_office__name", "load_mw")
+    area_office_frame = pd.DataFrame(area_office_qs)
+    area_office_frame = (
+        area_office_frame.groupby("feeder__area_office__name")["load_mw"].sum().reset_index(name="load_taken_mw")
+    )
+
+    # query for load taken for the current month
+    month_load_reading_qs = LoadReading.objects.filter(
+        date__year=grid_reading.date.year, date__month=grid_reading.date.month
+    ).values("date", "load_mw")
+    month_load_reading_df = pd.DataFrame(month_load_reading_qs)
+    month_load_reading_df["day"] = month_load_reading_df.date.dt.day
+
+    month_load_reading_df = month_load_reading_df.groupby("day")["load_mw"].sum().reset_index(name="load_taken_mw")
+
+    # get aggregate energy consumed by companywide for the month
+    current_month_load = LoadReading.objects.filter(
+        date__year=grid_reading.date.year, date__month=grid_reading.date.month
+    ).aggregate(current_month_load_mw=Sum("load_mw"))
 
     grid_qs = grid_reading
 
@@ -87,7 +110,7 @@ def dashboard(request):
     load_reading_frame = pd.DataFrame(load_reading_qs)
     load_reading_frame_by_date = load_reading_frame.groupby("date")["load_mw"].sum().reset_index(name="load_taken_mw")
 
-    load_center_frame = pd.DataFrame(load_reading_qs2)
+    load_center_frame = pd.DataFrame(load_center_qs)
     load_center_frame = (
         load_center_frame.groupby("feeder__power_transformer__station__short_name")["load_mw"]
         .sum()
@@ -116,7 +139,14 @@ def dashboard(request):
         value_name="load",
     )
     max_load = merged_frame.load.max() + 20
-    fig = px.line(merged_frame, x="hour", y="load", color="grid", markers=True, range_y=[0, max_load])
+    fig = px.line(
+        merged_frame,
+        x="hour",
+        y="load",
+        color="grid",
+        markers=True,
+        range_y=[0, max_load],
+    )
 
     # area_offices = []
     # counts = []
@@ -138,10 +168,11 @@ def dashboard(request):
 
     fig2 = px.bar(
         load_center_frame,
-        x="load_taken_mw",
-        y="feeder__power_transformer__station__short_name",
+        y="load_taken_mw",
+        x="feeder__power_transformer__station__short_name",
         text_auto=".1s",
-        orientation="h",
+        orientation="v",
+        color_discrete_sequence=["#1cc88a" for _ in range(load_center_frame.shape[1] + 1)],
     )
     fig2.update_layout({"plot_bgcolor": "white"})
     fig2.update_layout(margin=dict(l=0, r=0, t=50, b=50))
@@ -150,15 +181,50 @@ def dashboard(request):
 
     bar_chart = plot(fig2, output_type="div")
 
+    # area office load for the day
+    fig3 = px.bar(
+        area_office_frame,
+        y="load_taken_mw",
+        x="feeder__area_office__name",
+        text_auto=".1s",
+        orientation="v",
+        color_discrete_sequence=["#1cc88a" for _ in range(load_center_frame.shape[1] + 1)],
+    )
+    fig3.update_layout({"plot_bgcolor": "white"})
+    fig3.update_layout(margin=dict(l=0, r=0, t=50, b=50))
+    fig3.update_xaxes(title_text="")
+    fig3.update_yaxes(title_text="Load (MW)")
+
+    area_office_bar_chart = plot(fig3, output_type="div")
+
+    # daily load taken for current month
+    fig4 = px.area(
+        month_load_reading_df,
+        y="load_taken_mw",
+        x="day",
+        color_discrete_sequence=["#1cc88a" for _ in range(month_load_reading_df.shape[1] + 1)],
+    )
+    fig4.update_layout({"plot_bgcolor": "white"})
+    fig4.update_layout(margin=dict(l=0, r=0, t=50, b=50))
+    fig4.update_xaxes(title_text="")
+    fig4.update_yaxes(title_text="Load (MW)")
+
+    daily_load_bar_chart = plot(fig4, output_type="div")
+
+    print(current_month_load)
+
     return render(
         request,
         "core/dashboard.html",
         {
             "line_chart": line_chart,
             "bar_chart": bar_chart,
+            "area_office_bar_chart": area_office_bar_chart,
+            "daily_load_bar_chart": daily_load_bar_chart,
             "generation": grid_reading.generation_mw,
             "allocation": grid_reading.allocation_mw,
             "load_mw": current_load_reading,
+            "current_month_load_mw": current_month_load["current_month_load_mw"] / 1000,
             "grid_datetime": grid_reading.date,
         },
     )

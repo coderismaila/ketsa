@@ -43,6 +43,12 @@ class LoadReading(models.Model):
 
     status = models.CharField(_("feeder status"), max_length=3, choices=STATUS, blank=True, null=True)
 
+    # def get_queryset(self, request):
+    #     queryset = super().get_queryset(request)
+    #     queryset = queryset.annotate(
+
+    #     )
+
     # def __str__(self):
     #     return self.feeder.name
 

@@ -1,9 +1,7 @@
 {% extends 'core/base.html' %}
 
 {% block head %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"
-    integrity="sha512-ElRFoEQdI5Ht6kZvyzXhYG9NqjtkmlkfYk0wr6wHxU9JEHakS7UJZNeml5ALk+8IKlU6jDgMabC3vkumRokgJA=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 {% endblock %}
 
 {% block content %}
@@ -18,7 +16,7 @@
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                             Total Generation (GWh)</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">
                             {{ generation|floatformat:"2g" }}
@@ -61,15 +59,15 @@
         </div>
     </div>
 
-    <!-- Total Faults -->
+    <!-- Ompliance Status for the month -->
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-warning shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                            Total Faults</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                            Compliance to Load Off-take</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">+5%</div>
                     </div>
                 </div>
             </div>
@@ -85,7 +83,7 @@
         <div class="card shadow mb-4">
             <!-- Card Header - Dropdown -->
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Hourly Load Allocated Vs. Load Taken</h6>
+                <h6 class="m-0 font-weight-bold text-success">Hourly Load Allocated Vs. Load Taken</h6>
             </div>
             <!-- Card Body -->
             <div class="card-body">
@@ -103,7 +101,7 @@
         <div class="card shadow mb-4">
             <!-- Card Header - Dropdown -->
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Hourly Load by Load Centers</h6>
+                <h6 class="m-0 font-weight-bold text-success">Hourly Load by Load Centers</h6>
             </div>
             <!-- Card Body -->
             <div class="card-body">
@@ -114,4 +112,54 @@
         </div>
     </div>
 </div>
+<div class="card shadow mb-4">
+    <!-- Card Header - Dropdown -->
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-success">
+            Monthly Load taken by Area Offices in {{ grid_datetime | date:"M" }}
+        </h6>
+    </div>
+    <!-- Card Body -->
+    <div class="card-body w-full">
+        {% autoescape off %}
+        {{ area_office_bar_chart }}
+        {% endautoescape %}
+    </div>
+</div>
+
+
+<div class="row">
+
+    <!-- Daily Load Intake -->
+    <div class="col-xl-8 col-lg-8">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-success">Daily Load Intake</h6>
+            </div>
+            <!-- Card Body -->
+            <div class="card-body">
+
+                {% autoescape off %}
+                {{ daily_load_bar_chart }}
+                {% endautoescape %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Load Taken -->
+    <div class="col-xl-4 col-lg-4" style="height: 200px;">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-success">Energy Taken Companywide</h6>
+            </div>
+            <!-- Card Body -->
+            <div class="card-body d-flex align-items-center text-center justify-content-center">
+                <h1 class="font-weight-bold my-auto">{{ current_month_load_mw }}<br>GWh</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
